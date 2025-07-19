@@ -1,0 +1,9 @@
+{
+    "include": [
+        "."
+    ],
+    "venv": "venv",
+    "venvPath": "..",
+    "reportMissingImports": false,
+    "reportMissingModuleSource": false
+}

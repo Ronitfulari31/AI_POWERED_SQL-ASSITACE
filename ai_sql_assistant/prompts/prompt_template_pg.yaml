@@ -1,0 +1,119 @@
+_type: prompt
+input_variables:
+  - input
+
+template: |
+    Given below are the table structures in the database:
+          CUSTOMER (
+              C_CUSTKEY INTEGER,
+              C_NAME VARCHAR(25),
+              C_ADDRESS VARCHAR(40),
+              C_NATIONKEY INTEGER,
+              C_PHONE VARCHAR(15),
+              C_ACCTBAL NUMERIC(12,2),
+              C_MKTSEGMENT VARCHAR(10),
+              C_COMMENT VARCHAR(117)
+          );
+          LINEITEM (
+              L_ORDERKEY INTEGER,
+              L_PARTKEY INTEGER,
+              L_SUPPKEY INTEGER,
+              L_LINENUMBER INTEGER,
+              L_QUANTITY NUMERIC(12,2),
+              L_EXTENDEDPRICE NUMERIC(12,2),
+              L_DISCOUNT NUMERIC(12,2),
+              L_TAX NUMERIC(12,2),
+              L_RETURNFLAG VARCHAR(1),
+              L_LINESTATUS VARCHAR(1),
+              L_SHIPDATE DATE,
+              L_COMMITDATE DATE,
+              L_RECEIPTDATE DATE,
+              L_SHIPINSTRUCT VARCHAR(25),
+              L_SHIPMODE VARCHAR(10),
+              L_COMMENT VARCHAR(44)
+          );
+          NATION (
+              N_NATIONKEY INTEGER,
+              N_NAME VARCHAR(25),
+              N_REGIONKEY INTEGER,
+              N_COMMENT VARCHAR(152)
+          );
+          PART (
+              P_PARTKEY INTEGER,
+              P_NAME VARCHAR(55),
+              P_MFGR VARCHAR(25),
+              P_BRAND VARCHAR(10),
+              P_TYPE VARCHAR(25),
+              P_SIZE INTEGER,
+              P_CONTAINER VARCHAR(10),
+              P_RETAILPRICE NUMERIC(12,2),
+              P_COMMENT VARCHAR(23)
+          );
+          PARTSUPP (
+              PS_PARTKEY INTEGER,
+              PS_SUPPKEY INTEGER,
+              PS_AVAILQTY INTEGER,
+              PS_SUPPLYCOST NUMERIC(12,2),
+              PS_COMMENT VARCHAR(199)
+          );
+          REGION (
+              R_REGIONKEY INTEGER,
+              R_NAME VARCHAR(25),
+              R_COMMENT VARCHAR(152)
+          );
+          SUPPLIER (
+              S_SUPPKEY INTEGER,
+              S_NAME VARCHAR(25),
+              S_ADDRESS VARCHAR(40),
+              S_NATIONKEY INTEGER,
+              S_PHONE VARCHAR(15),
+              S_ACCTBAL NUMERIC(12,2),
+              S_COMMENT VARCHAR(101)
+          );
+          ORDERS (
+              O_ORDERKEY INTEGER,
+              O_CUSTKEY INTEGER,
+              O_ORDERSTATUS VARCHAR(1),
+              O_TOTALPRICE NUMERIC(12,2),
+              O_ORDERDATE DATE,
+              O_ORDERPRIORITY VARCHAR(15),
+              O_CLERK VARCHAR(15),
+              O_SHIPPRIORITY INTEGER,
+              O_COMMENT VARCHAR(79)
+          );
+                  take user questions and response back with sql query.
+              example : 
+              user question : give me the number of orders placed in last 10 days
+              your generated sql query : SELECT o_orderdate , COUNT(*) FROM orders  WHERE o_orderdate BETWEEN CURRENT_DATE - 10 AND CURRENT_DATE GROUP BY o_orderdate ;
+              example :
+              user question : tell me top 3 nations having the maximum orders
+              your generated sql query : SELECT n.n_name , COUNT(*) AS order_count FROM orders o 
+                                          INNER JOIN customer c ON o.o_custkey = c.c_custkey
+                                          INNER JOIN nation n ON c.c_nationkey = n.n_nationkey
+                                          GROUP BY n.n_name ORDER BY order_count DESC;
+              example :
+              user_question : give me the name and address of suppliers for which the available quatity is minimum
+              your generated sql query : SELECT DISTINCT s.s_name ,s.s_address
+                                          FROM part p
+                                          INNER JOIN partsupp ps ON p.p_partkey = ps.ps_partkey
+                                          INNER JOIN supplier s ON ps.ps_suppkey = s.s_suppkey
+                                          WHERE p.p_partkey IN (SELECT ps2.ps_partkey  FROM partsupp ps2 ORDER BY ps_availqty ASC LIMIT 1 );
+              example :
+              user question : show all customers
+              your generated sql query : SELECT * FROM customer;
+              example :
+              user question : insert a new customer with name ronit and address pune
+              your generated sql query : INSERT INTO customer (c_custkey, c_name, c_address, c_nationkey, c_phone, c_acctbal, c_mktsegment, c_comment) VALUES (4, 'ronit', 'pune', 1, '11-234-567-8901', 3500.00, 'RETAIL', 'regular customer from New York');
+              example :
+              user_question : give me the name and address of suppliers for which the available quatity is minimum
+              your generated sql query : SELECT DISTINCT s.s_name ,s.s_address
+                                       FROM part p
+                                       INNER JOIN partsupp ps ON p.p_partkey = ps.ps_partkey
+                                       INNER JOIN supplier s ON ps.ps_suppkey = s.s_suppkey
+                                       WHERE p.p_partkey IN (SELECT ps2.ps_partkey  FROM partsupp ps2 ORDER BY ps_availqty ASC LIMIT 1 )
+
+              user question : {input}
+              your generated sql query:
+
+output_parser: null
+partial_variables: {}
